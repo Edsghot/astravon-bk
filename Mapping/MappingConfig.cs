@@ -1,4 +1,5 @@
 ﻿using Astravon.Model.Dtos.Teacher;
+using Astravon.Model.Dtos.User;
 using Astravon.Modules.User.Domain.Entity;
 using Mapster;
 

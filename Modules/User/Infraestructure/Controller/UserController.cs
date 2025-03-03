@@ -1,4 +1,5 @@
 ﻿using Astravon.Model.Dtos.Teacher;
+using Astravon.Model.Dtos.User;
 using Astravon.Modules.User.Application.Port;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +18,14 @@ public class UserController : ControllerBase
     {
         _userInputPort = userInputPort;
         _userOutPort = userOutPort;
+    }
+    
+    [HttpPost("createUser")]
+    public async Task<IActionResult> CreateUser([FromBody] CreateUserDto data)
+    {
+        await _userInputPort.CreateUser(data);
+        var response = _userOutPort.GetResponse;
+        return Ok(response);
     }
 
     [HttpGet]

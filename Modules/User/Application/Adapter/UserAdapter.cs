@@ -1,4 +1,5 @@
 ﻿using Astravon.Model.Dtos.Teacher;
+using Astravon.Model.Dtos.User;
 using Astravon.Modules.User.Application.Port;
 using Astravon.Modules.User.Domain.Entity;
 using Astravon.Modules.User.Domain.IRepository;
@@ -6,7 +7,7 @@ using CloudinaryDotNet;
 using MailKit.Net.Smtp;
 using Mapster;
 using MimeKit;
-using UserDto = Astravon.Model.Dtos.User.UserDto;
+using Org.BouncyCastle.Crypto.Generators;
 
 namespace Astravon.Modules.User.Application.Adapter;
 
@@ -28,6 +29,18 @@ public class UserAdapter: IUserInputPort
         _userOutPort = userOutPort;
         var account = new Account("dd0qlzyyk", "952839112726724", "7fxZGsz7Lz2vY5Ahp6spldgMTW4");
         _cloudinary = new Cloudinary(account);
+    }
+
+
+    public async Task CreateUser(CreateUserDto createUserRequest)
+    {
+        var user = createUserRequest.Adapt<UserEntity>();
+        var salt = new byte[16];
+        new Random().NextBytes(salt);
+        var cost = 12; 
+        user.Password = Convert.ToBase64String(BCrypt.Generate(System.Text.Encoding.UTF8.GetBytes(user.Password), salt, cost));
+        await _userRepository.AddAsync(user);
+        _userOutPort.Ok("Usuario creado correctamente");
     }
     
      public async Task GetAllUsersAsync()
