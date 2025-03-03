@@ -1,4 +1,5 @@
-﻿using Astravon.Model.Dtos.Teacher;
+﻿using Astravon.HUb;
+using Astravon.Model.Dtos.Teacher;
 using Astravon.Model.Dtos.User;
 using Astravon.Modules.User.Application.Port;
 using Astravon.Modules.User.Domain.Entity;
@@ -6,6 +7,7 @@ using Astravon.Modules.User.Domain.IRepository;
 using CloudinaryDotNet;
 using MailKit.Net.Smtp;
 using Mapster;
+using Microsoft.AspNetCore.SignalR;
 using MimeKit;
 using Org.BouncyCastle.Crypto.Generators;
 
@@ -20,20 +22,28 @@ public class UserAdapter: IUserInputPort
     private readonly string _smtpUser = "edsghotSolutions@gmail.com";
     private readonly string _smtpPass = "lfqpacmpmnvuwhvb";
     private readonly Cloudinary _cloudinary;
+    private readonly IHubContext<AstravonHub> _hubContext;
 
 
 
-    public UserAdapter(IUserRepository repository,IUserOutPort userOutPort)
+    public UserAdapter(IUserRepository repository,IUserOutPort userOutPort,IHubContext<AstravonHub> hubContext)
     {
         _userRepository = repository;
         _userOutPort = userOutPort;
         var account = new Account("dd0qlzyyk", "952839112726724", "7fxZGsz7Lz2vY5Ahp6spldgMTW4");
         _cloudinary = new Cloudinary(account);
+        _hubContext = hubContext;
     }
 
 
     public async Task CreateUser(CreateUserDto createUserRequest)
     {
+        var userMail = await _userRepository.GetAsync<UserEntity>(x => x.Mail == createUserRequest.Mail);
+        if(userMail != null)
+        {
+            _userOutPort.Error("El correo ya esta registrado");
+            return;
+        }
         var user = createUserRequest.Adapt<UserEntity>();
         var salt = new byte[16];
         new Random().NextBytes(salt);
@@ -41,6 +51,7 @@ public class UserAdapter: IUserInputPort
         user.Password = Convert.ToBase64String(BCrypt.Generate(System.Text.Encoding.UTF8.GetBytes(user.Password), salt, cost));
         await _userRepository.AddAsync(user);
         _userOutPort.Ok("Usuario creado correctamente");
+        await _hubContext.Clients.All.SendAsync("ReceiveMessage", "Sistema", $"Nuevo usuario creado: {user.FirstName} {user.LastName}");
     }
     
      public async Task GetAllUsersAsync()

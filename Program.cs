@@ -2,6 +2,7 @@ using AutoMapper;
 using Mapster;
 using Microsoft.EntityFrameworkCore;
 using Astravon.Configuration.Context;
+using Astravon.HUb;
 using Astravon.Mapping;
 using Astravon.Modules.User.Application.Adapter;
 using Astravon.Modules.User.Application.Port;
@@ -38,6 +39,8 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddSignalR();
+
 var app = builder.Build();
 
 
@@ -57,5 +60,7 @@ app.UseCors("AllowAll");
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<AstravonHub>("/astravonHub");
 
 app.Run();
