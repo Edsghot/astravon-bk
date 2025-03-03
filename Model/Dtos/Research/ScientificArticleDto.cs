@@ -1,4 +1,4 @@
-﻿namespace Astragon.Model.Dtos.Research;
+﻿namespace Astravon.Model.Dtos.Research;
 
 public record ScientificArticleDto
 {

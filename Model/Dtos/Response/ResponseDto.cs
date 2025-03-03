@@ -1,4 +1,4 @@
-﻿namespace Astragon.Model.Dtos.Response;
+﻿namespace Astravon.Model.Dtos.Response;
 
 public record ResponseDto<T>
 {

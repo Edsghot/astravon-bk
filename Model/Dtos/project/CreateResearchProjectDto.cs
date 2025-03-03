@@ -1,4 +1,4 @@
-﻿namespace Astragon.Model.Dtos.project;
+﻿namespace Astravon.Model.Dtos.project;
 
 public record CreateResearchProjectDto
 {

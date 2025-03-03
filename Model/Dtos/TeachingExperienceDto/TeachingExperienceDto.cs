@@ -1,4 +1,4 @@
-﻿namespace Astragon.Model.Dtos.TeachingExperienceDto;
+﻿namespace Astravon.Model.Dtos.TeachingExperienceDto;
 
 public record TeachingExperienceDto
 {

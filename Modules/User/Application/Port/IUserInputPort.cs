@@ -1,9 +1,11 @@
-﻿using Astragon.Model.Dtos.User;
-using Astragon.Modules.User.Domain.Entity;
+﻿using Astravon.Model.Dtos.Teacher;
 
-namespace Astragon.Modules.User.Application.Port;
+namespace Astravon.Modules.User.Application.Port;
 
 public interface IUserInputPort
 {
     Task GetAllUsersAsync();
+    Task Login(LoginDto loginRequest);
+    Task SendVerificationEmailAsync(string toEmail);
+    Task ValidateCode(string email, string inputCode);
 }

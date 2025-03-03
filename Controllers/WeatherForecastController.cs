@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 
-namespace Astragon.Controllers
+namespace Astravon.Controllers
 {
     [ApiController]
     [Route("[controller]")]

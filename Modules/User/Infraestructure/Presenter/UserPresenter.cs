@@ -1,19 +1,24 @@
-﻿using Astragon.Model.Dtos.Response;
-using Astragon.Configuration.Shared;
-using Astragon.Model.Dtos.User;
-using Astragon.Modules.User.Application.Port;
+﻿using Astravon.Configuration.Shared;
+using Astravon.Model.Dtos.User;
+using Astravon.Modules.User.Application.Port;
 
-namespace Astragon.Modules.User.Infraestructure.Presenter;
+namespace Astravon.Modules.User.Infraestructure.Presenter;
 
 public class UserPresenter : BasePresenter<object>, IUserOutPort
 {
-    public void GetAllUsersAsync(IEnumerable<UserDto> data)
-    {
-        Success(data, "Users successfully retrieved.");
-    }
-
     public void NotFound(string message = "Data not found")
     {
         base.NotFound(message);
+    }
+    
+    public void GetAllUsersAsync(IEnumerable<UserDto> data)
+    {
+        Success(data, "Datos exitosos");
+    }
+    
+    
+    public void Login(UserDto data)
+    {
+        Success(data, "Datos exitosos");
     }
 }

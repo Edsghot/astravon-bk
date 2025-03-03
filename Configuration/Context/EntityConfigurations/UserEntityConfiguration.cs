@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Astravon.Modules.User.Domain.Entity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Astragon.Modules.User.Domain.Entity;
 
-namespace Astragon.Configuration.Context.EntityConfigurations;
+namespace Astravon.Configuration.Context.EntityConfigurations;
 
 public class UserEntityConfiguration : IEntityTypeConfiguration<UserEntity>
 {
@@ -15,11 +15,8 @@ public class UserEntityConfiguration : IEntityTypeConfiguration<UserEntity>
             .HasMaxLength(100)
             .IsRequired();
         builder.Property(u => u.LastName).HasMaxLength(300).IsRequired();
-        builder.Property(u => u.Email).HasMaxLength(100).IsRequired();
+        builder.Property(u => u.Mail).HasMaxLength(100).IsRequired();
         builder.Property(u => u.Password).HasMaxLength(100).IsRequired();
-        builder.Property(u => u.PhoneNumber).HasMaxLength(100).IsRequired();
-        builder.Property(u => u.Gender).HasMaxLength(100).IsRequired();
-        builder.Property(u => u.BirthDate).IsRequired();
-        builder.Property(u => u.Years).IsRequired();
+
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace Astragon.Model.Dtos.WorkExperience;
+﻿namespace Astravon.Model.Dtos.WorkExperience;
 
 public record WorkExperienceDto
 {

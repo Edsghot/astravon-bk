@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace Astragon.Configuration.Context.Repository;
+namespace Astravon.Configuration.Context.Repository;
 
 public interface IBaseRepository
 {

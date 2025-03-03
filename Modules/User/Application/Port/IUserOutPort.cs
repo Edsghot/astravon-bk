@@ -1,9 +1,10 @@
-﻿using Astragon.Configuration.Shared;
-using Astragon.Model.Dtos.User;
+﻿using Astravon.Configuration.Shared;
+using Astravon.Model.Dtos.User;
 
-namespace Astragon.Modules.User.Application.Port;
+namespace Astravon.Modules.User.Application.Port;
 
 public interface IUserOutPort : IBasePresenter<object>
 {
     void GetAllUsersAsync(IEnumerable<UserDto> data);
+    void Login(UserDto data);
 }

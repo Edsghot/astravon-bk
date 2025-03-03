@@ -1,10 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Astragon.Configuration.Context;
-using Astragon.Configuration.Context.Repository;
-using Astragon.Modules.User.Domain.Entity;
-using Astragon.Modules.User.Domain.IRepository;
+﻿using Astravon.Configuration.Context;
+using Astravon.Configuration.Context.Repository;
+using Astravon.Modules.User.Domain.Entity;
+using Astravon.Modules.User.Domain.IRepository;
+using Microsoft.EntityFrameworkCore;
 
-namespace Astragon.Modules.User.Infraestructure.Repository;
+namespace Astravon.Modules.User.Infraestructure.Repository;
 
 public class UserRepository : BaseRepository<MySqlContext>, IUserRepository
 {

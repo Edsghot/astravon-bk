@@ -1,10 +1,10 @@
-﻿using Astragon.Model.Dtos.User;
+﻿using Astravon.Model.Dtos.Teacher;
+using Astravon.Modules.User.Application.Port;
 using Microsoft.AspNetCore.Mvc;
-using Astragon.Modules.User.Application.Port;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace Astragon.Modules.User.Infraestructure.Controller;
+namespace Astravon.Modules.User.Infraestructure.Controller;
 
 [Route("api/[controller]")]
 [ApiController]
@@ -27,29 +27,20 @@ public class UserController : ControllerBase
 
         return Ok(response);
     }
-
-    // GET api/<ResearchController>/5
-    [HttpGet("{id}")]
-    public string Get(int id)
+    [HttpPost("SendCodeValidation/{email}")]
+    public async Task<IActionResult> SendCodeValidation([FromRoute] string email)
     {
-        return "value";
+        await _userInputPort.SendVerificationEmailAsync(email);
+        var response = _userOutPort.GetResponse;
+        return Ok(response);
     }
 
-    // POST api/<ResearchController>
-    [HttpPost]
-    public void Post([FromBody] string value)
+    [HttpGet("ValidateMail")]
+    public async Task<IActionResult> ValidateEmail([FromQuery] ValidateDto data)
     {
+        await _userInputPort.ValidateCode(data.Email, data.Code);
+        var response = _userOutPort.GetResponse;
+        return Ok(response);
     }
-
-    // PUT api/<ResearchController>/5
-    [HttpPut("{id}")]
-    public void Put(int id, [FromBody] string value)
-    {
-    }
-
-    // DELETE api/<ResearchController>/5
-    [HttpDelete("{id}")]
-    public void Delete(int id)
-    {
-    }
+   
 }

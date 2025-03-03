@@ -1,4 +1,4 @@
-﻿namespace Astragon.Modules.Teacher.Domain.Entity;
+﻿namespace Astravon.Modules.User.Domain.Entity;
 
 public class ValidateEntity
 {

@@ -1,6 +1,6 @@
-﻿using Astragon.Model.Dtos.Response;
+﻿using Astravon.Model.Dtos.Response;
 
-namespace Astragon.Configuration.Shared;
+namespace Astravon.Configuration.Shared;
 
 public class BasePresenter<T> : IBasePresenter<T>
 {

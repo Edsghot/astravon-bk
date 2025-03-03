@@ -1,9 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Astravon.Modules.User.Domain.Entity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Astragon.Modules.Teacher.Domain.Entity;
-using Astragon.Modules.User.Domain.Entity;
 
-namespace Astragon.Configuration.Context.EntityConfigurations;
+namespace Astravon.Configuration.Context.EntityConfigurations;
 
 public class ValidateEntityConfiguration : IEntityTypeConfiguration<ValidateEntity>
 {

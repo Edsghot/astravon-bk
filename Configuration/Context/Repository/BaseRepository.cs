@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 
-namespace Astragon.Configuration.Context.Repository;
+namespace Astravon.Configuration.Context.Repository;
 
 public abstract class BaseRepository<TContext> : IBaseRepository where TContext : DbContext
 {

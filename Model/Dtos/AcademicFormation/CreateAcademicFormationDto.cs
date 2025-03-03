@@ -1,4 +1,4 @@
-﻿namespace Astragon.Model.Dtos.AcademicFormation;
+﻿namespace Astravon.Model.Dtos.AcademicFormation;
 
 public record CreateAcademicFormationDto
 {

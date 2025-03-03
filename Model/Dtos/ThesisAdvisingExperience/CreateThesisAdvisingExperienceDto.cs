@@ -1,4 +1,4 @@
-﻿namespace Astragon.Model.Dtos.ThesisAdvisingExperience;
+﻿namespace Astravon.Model.Dtos.ThesisAdvisingExperience;
 
 public record CreateThesisAdvisingExperienceDto
 

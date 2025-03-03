@@ -1,4 +1,4 @@
-﻿namespace Astragon.Model.Dtos.User;
+﻿namespace Astravon.Model.Dtos.User;
 
 public record UserDto
 {
