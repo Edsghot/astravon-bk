@@ -79,33 +79,41 @@ public class UserAdapter: IUserInputPort
      
      public async Task Login(LoginDto loginRequest)
      {
-         var user = await _userRepository.GetAsync<UserEntity>(x =>
-             x.Mail == loginRequest.Mail && x.Password == loginRequest.Password);
+         var user = await _userRepository.GetAsync<UserEntity>(x => x.Mail == loginRequest.Mail);
          if (user == null)
          {
              _userOutPort.Error("Revise bien tus credenciales");
              return;
          }
 
-         var teacher = user.Adapt<UserDto>();
+         var salt = Convert.FromBase64String(user.Password).Take(16).ToArray();
+         var cost = 12;
+         var hashedPassword = Convert.ToBase64String(BCrypt.Generate(System.Text.Encoding.UTF8.GetBytes(loginRequest.Password), salt, cost));
 
-         _userOutPort.Login(teacher);
+         if (user.Password != hashedPassword)
+         {
+             _userOutPort.Error("Revise bien tus credenciales");
+             return;
+         }
+
+         var userDto = user.Adapt<UserDto>();
+         _userOutPort.Login(userDto);
      }
-     
 
 
     public async Task SendVerificationEmailAsync(string toEmail)
     {
         var code = GenerateCode();
+        var nameGmail = toEmail.Split('@')[0].ToString();
 
         var message = new MimeMessage();
         message.From.Add(new MailboxAddress("Astravon", _smtpUser));
         message.To.Add(new MailboxAddress("", toEmail));
-        message.Subject = "Código de verificación";
+        message.Subject = "Código de verificación "+code;
 
         message.Body = new TextPart("html")
         {
-            Text = $"<h2>Bievenido a Astravon<b></b> Tu código de verificación es: <b>{code}</b></h2><p>Este código expira en unos minutos.</p>"
+            Text = $"<div\n  style=\"\n    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;\n    background-color: #f4f4f4;\n    margin: 0;\n    padding: 0;\n  \"\n>\n  <div\n    style=\"\n      max-width: 600px;\n      margin: 0 auto;\n      background-color: #ffffff;\n      border-radius: 8px;\n      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n    \"\n  >\n    <div\n      style=\"\n        display: flex;\n        align-items: center;\n        justify-content: flex-end;\n        padding: 20px;\n        background-color: #f0f0f0;\n        border-bottom: 2px solid #f0f0f0;\n      \"\n    >\n      <img\n        src=\"https://static.vecteezy.com/system/resources/previews/019/514/652/non_2x/letter-a-logo-design-for-business-and-company-identity-with-luxury-concept-free-vector.jpg\"\n        alt=\"Astravon Logo\"\n        style=\"\n          margin-right: 10px;\n          width: 50px;\n          height: auto;\n          border-radius: 20%;\n        \"\n      />\n      <h1 style=\"font-size: 24px; margin: 0; font-weight: bolder\">\n        <span style=\"color: #6d4510\">Astravon</span>\n      </h1>\n    </div>\n    <div style=\"padding: 20px; text-align: justify\">\n      <h2 style=\"font-size: 22px; color: #333333\">\n        <span style=\"color: #b77e1b\">Hola, </span> {nameGmail}\n      </h2>\n      <p style=\"font-size: 16px; color: #555555\">\n        \u2705 ¡Gracias por registrarte para obtener una cuenta en JhedGost! \u2b50\n        Antes de comenzar, necesitamos confirmar tu identidad. Por favor, copia\n        el siguiente código e introdúcelo en la aplicación para verificar tu\n        dirección de correo electrónico: \u2b07\ud83d\udd11\n      </p>\n      <div\n        style=\"\n          background-color: #f0f0f0;\n          padding: 5px;\n          border-radius: 8px;\n          margin-top: 10px;\n          text-align: center;\n          font-size: 24px;\n          font-weight: bold;\n          color: #333333;\n        \"\n      >\n        <p>{code}</p>\n      </div>\n    </div>\n    <div\n      style=\"\n        text-align: center;\n        padding: 20px;\n        background-color: #7c4c27;\n        border-top: 2px solid #f0f0f0;\n      \"\n    >\n      <p style=\"font-size: 14px; color: #fff; margin: 10px 0\">\n        Nunca pares de aprender,<br />\n        Team JhedGost.\n      </p>\n      <img\n        src=\"https://static.vecteezy.com/system/resources/previews/019/514/652/non_2x/letter-a-logo-design-for-business-and-company-identity-with-luxury-concept-free-vector.jpg\"\n        alt=\"Astravon Logo\"\n        style=\"\n          margin-top: 20px;\n          width: 50px;\n          height: 50px;\n          border-radius: 50%;\n          object-fit: cover;\n        \"\n      />\n      <p style=\"font-size: 14px; color: #fff; margin: 10px 0\">\n        Enviado por JHEDGOST Av. Manuel Olguin Nro. 325, Abancay, Perú 2024\n      </p>\n    </div>\n\u00a0\u00a0</div>\n</div>"
         };
 
         using var client = new SmtpClient();
@@ -160,7 +168,7 @@ public class UserAdapter: IUserInputPort
     private string GenerateCode()
     {
         var random = new Random();
-        var code = random.Next(100000, 999999).ToString();
+        var code = random.Next(1000, 9999).ToString();
         return code;
     }    
     #endregion
