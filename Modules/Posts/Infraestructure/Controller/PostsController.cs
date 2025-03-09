@@ -1,10 +1,12 @@
-﻿using Astravon.Model.Dtos.Comment;
+﻿using Astravon.HUb;
+using Astravon.Model.Dtos.Comment;
 using Astravon.Model.Dtos.Likes;
 using Astravon.Model.Dtos.Post;
 using Astravon.Model.Dtos.Teacher;
 using Astravon.Model.Dtos.User;
 using Astravon.Modules.User.Application.Port;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -14,6 +16,7 @@ namespace Astravon.Modules.User.Infraestructure.Controller;
 [ApiController]
 public class PostsController : ControllerBase
 {
+    private readonly IHubContext<PostHub> _hubContext;
     private readonly IPostInputPort _postInputPort;
     private readonly IPostOutPort _postOutPort;
 
@@ -26,6 +29,7 @@ public class PostsController : ControllerBase
     public async Task<IActionResult> CreateComment([FromBody] CreateCommentDto data)
     {
         await _postInputPort.CreateComment(data);
+        await _hubContext.Clients.All.SendAsync("RefreshPosts");
         var response = _postOutPort.GetResponse;
         return Ok(response);
     }
@@ -60,6 +64,7 @@ public class PostsController : ControllerBase
     public async Task<IActionResult> CreatePost([FromForm] CreatePostDto data)
     {
         await _postInputPort.CreatePost(data);
+        
         var response = _postOutPort.GetResponse;
         return Ok(response);
     }

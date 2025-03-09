@@ -44,7 +44,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddSignalR();
+builder.Services.AddSignalR(); 
 
 var app = builder.Build();
 
@@ -67,5 +67,6 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.MapHub<AstravonHub>("/astravonHub");
+app.MapHub<PostHub>("/postHub");
 
 app.Run();
