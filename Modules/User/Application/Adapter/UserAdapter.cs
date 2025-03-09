@@ -70,7 +70,7 @@ public class UserAdapter: IUserInputPort
              Id = user.Id,
              FirstName = user.FirstName,
              LastName = user.LastName,
-             Email = user.Mail
+             Mail = user.Mail
          });
          
          _userOutPort.GetAllUsersAsync(userDtos);
@@ -80,7 +80,7 @@ public class UserAdapter: IUserInputPort
      public async Task Login(LoginDto loginRequest)
      {
          var user = await _userRepository.GetAsync<UserEntity>(x =>
-             x.Mail == loginRequest.Email && x.Password == loginRequest.Password);
+             x.Mail == loginRequest.Mail && x.Password == loginRequest.Password);
          if (user == null)
          {
              _userOutPort.Error("Revise bien tus credenciales");

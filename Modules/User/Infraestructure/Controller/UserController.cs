@@ -27,6 +27,15 @@ public class UserController : ControllerBase
         var response = _userOutPort.GetResponse;
         return Ok(response);
     }
+    
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] LoginDto data)
+    {
+        await _userInputPort.Login(data);
+        var response = _userOutPort.GetResponse;
+        return Ok(response);
+    }
+
 
     [HttpGet]
     public async Task<IActionResult> Get()
