@@ -49,12 +49,10 @@ public class PostsController : ControllerBase
     [HttpGet("getCommentById/{commentId}")]
     public async Task<IActionResult> GetCommentById(int commentId)
     {
-        var comment = await _postInputPort.GetCommentById(commentId);
-        if (comment == null)
-        {
-            return NotFound();
-        }
-        return Ok(comment);
+        await _postInputPort.GetCommentById(commentId);
+        var response = _postOutPort.GetResponse;
+
+        return Ok(response);
     }
 
     // Post Endpoints
@@ -85,12 +83,10 @@ public class PostsController : ControllerBase
     [HttpGet("getPostById/{postId}")]
     public async Task<IActionResult> GetPostById(int postId)
     {
-        var post = await _postInputPort.GetPostById(postId);
-        if (post == null)
-        {
-            return NotFound();
-        }
-        return Ok(post);
+        await _postInputPort.GetPostById(postId);
+        var response = _postOutPort.GetResponse;
+
+        return Ok(response);
     }
 
     // Like Endpoints
@@ -113,20 +109,28 @@ public class PostsController : ControllerBase
     [HttpGet("getLikeById/{likeId}")]
     public async Task<IActionResult> GetLikeById(int likeId)
     {
-        var like = await _postInputPort.GetLikeById(likeId);
-        if (like == null)
-        {
-            return NotFound();
-        }
-        return Ok(like);
+        await _postInputPort.GetLikeById(likeId);
+        var response = _postOutPort.GetResponse;
+
+        return Ok(response);
     }
     
-    [HttpGet("getPostWithCountsById")]
-    public async Task<IActionResult> GetPostWithCountsById()
+    [HttpGet("getAllPostWithCounts")]
+    public async Task<IActionResult> GetAllPostWithCounts()
     {
-        var postWithCounts = await _postInputPort.GetPostWithCountsById();
-        
-        return Ok(postWithCounts);
+         await _postInputPort.GetPostWithCountsById();
+        var response = _postOutPort.GetResponse;
+
+        return Ok(response);
+    }
+    
+    [HttpGet("getAllCommentByPost/{postId}")]
+    public async Task<IActionResult> getAllCommentByPost([FromRoute] int postId)
+    {
+        await _postInputPort.GetCommentByPost(postId);
+        var response = _postOutPort.GetResponse;
+
+        return Ok(response);
     }
    
 }

@@ -255,7 +255,7 @@ public class PostAdapter: IPostInputPort
     
     public async Task GetCommentByPost(int postId)
     {
-        var comments = await _postRepository.GetAllAsync<CommentDto>(x => x.Where(x => x.PostId == postId));
+        var comments = await _postRepository.GetAllAsync<CommentEntity>(x => x.Where(x => x.PostId == postId));
         
         var response =  comments.Adapt<List<CommentDto>>();
         
