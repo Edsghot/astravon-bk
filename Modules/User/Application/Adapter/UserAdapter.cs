@@ -10,6 +10,8 @@ using Mapster;
 using Microsoft.AspNetCore.SignalR;
 using MimeKit;
 using Org.BouncyCastle.Crypto.Generators;
+using BCrypt.Net;
+
 
 namespace Astravon.Modules.User.Application.Adapter;
 
@@ -39,21 +41,30 @@ public class UserAdapter: IUserInputPort
 
     public async Task CreateUser(CreateUserDto createUserRequest)
     {
+        // Verificar si el correo ya está registrado
         var userMail = await _userRepository.GetAsync<UserEntity>(x => x.Mail == createUserRequest.Mail);
-        if(userMail != null)
+        if (userMail != null)
         {
-            _userOutPort.Error("El correo ya esta registrado");
+            _userOutPort.Error("El correo ya está registrado");
             return;
         }
+
+        // Mapear DTO a Entidad
         var user = createUserRequest.Adapt<UserEntity>();
-        var salt = new byte[16];
-        new Random().NextBytes(salt);
-        var cost = 12; 
-        user.Password = Convert.ToBase64String(BCrypt.Generate(System.Text.Encoding.UTF8.GetBytes(user.Password), salt, cost));
+
+        // Hashear la contraseña de forma segura con BCrypt
+        user.Password = BCrypt.Net.BCrypt.HashPassword(createUserRequest.Password, workFactor: 12);
+
+        // Guardar el usuario en la base de datos
         await _userRepository.AddAsync(user);
+
+        // Respuesta de éxito
         _userOutPort.Ok("Usuario creado correctamente");
+
+        // Notificar a los clientes en tiempo real con SignalR
         await _hubContext.Clients.All.SendAsync("ReceiveMessage", "Sistema", $"Nuevo usuario creado: {user.FirstName} {user.LastName}");
     }
+
     
      public async Task GetAllUsersAsync()
      {
@@ -82,23 +93,20 @@ public class UserAdapter: IUserInputPort
          var user = await _userRepository.GetAsync<UserEntity>(x => x.Mail == loginRequest.Mail);
          if (user == null)
          {
-             _userOutPort.Error("Revise bien tus credenciales");
+             _userOutPort.Error("Correo o contraseña incorrectos.");
              return;
          }
 
-         var salt = Convert.FromBase64String(user.Password).Take(16).ToArray();
-         var cost = 12;
-         var hashedPassword = Convert.ToBase64String(BCrypt.Generate(System.Text.Encoding.UTF8.GetBytes(loginRequest.Password), salt, cost));
-
-         if (user.Password != hashedPassword)
+         // Verificar la contraseña correctamente
+         if (!BCrypt.Net.BCrypt.Verify(loginRequest.Password, user.Password))
          {
-             _userOutPort.Error("Revise bien tus credenciales");
+             _userOutPort.Error("Correo o contraseña incorrectos.");
              return;
          }
-
          var userDto = user.Adapt<UserDto>();
          _userOutPort.Login(userDto);
      }
+
 
 
     public async Task SendVerificationEmailAsync(string toEmail)
