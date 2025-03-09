@@ -27,5 +27,8 @@ public class MySqlContext : DbContext
     {
         modelBuilder.ApplyConfiguration(new UserEntityConfiguration());
         modelBuilder.ApplyConfiguration(new ValidateEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new PostsEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new CommentEntityConfiguration());
+        modelBuilder.ApplyConfiguration(new LikeEntityConfiguration());
     }
 }

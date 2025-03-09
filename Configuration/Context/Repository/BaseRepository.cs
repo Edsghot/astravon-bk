@@ -16,6 +16,10 @@ public abstract class BaseRepository<TContext> : IBaseRepository where TContext 
     {
         return await _context.Set<TEntity>().FirstOrDefaultAsync(predicate);
     }
+    public async Task<int> CountAsync<TEntity>(Expression<Func<TEntity, bool>> predicate) where TEntity : class
+    {
+        return await _context.Set<TEntity>().CountAsync(predicate);
+    }
 
     public async Task<TEntity?> GetAsync<TEntity>(
         Expression<Func<TEntity, bool>> predicate,

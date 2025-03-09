@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Astravon.Configuration.Context;
 using Astravon.HUb;
 using Astravon.Mapping;
+using Astravon.Modules.Posts.Application.Adapter;
 using Astravon.Modules.User.Application.Adapter;
 using Astravon.Modules.User.Application.Port;
 using Astravon.Modules.User.Domain.IRepository;
@@ -27,6 +28,10 @@ MappingConfig.RegisterMappings();
 builder.Services.AddScoped<IUserInputPort, UserAdapter>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserOutPort, UserPresenter>();
+
+builder.Services.AddScoped<IPostInputPort, PostAdapter>();
+builder.Services.AddScoped<IPostRepository, PostRepository>();
+builder.Services.AddScoped<IPostOutPort, PostPresenter>();
 
 // Configuración de CORS para permitir cualquier origen
 builder.Services.AddCors(options =>
