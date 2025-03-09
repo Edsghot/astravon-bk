@@ -17,6 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
+builder.Services.AddSignalR(); 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -44,7 +45,6 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddSignalR(); 
 
 var app = builder.Build();
 
@@ -63,10 +63,10 @@ app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 
 app.UseAuthorization();
-
+app.MapHub<PostHub>("/postHub");
 app.MapControllers();
 
 app.MapHub<AstravonHub>("/astravonHub");
-app.MapHub<PostHub>("/postHub");
+
 
 app.Run();

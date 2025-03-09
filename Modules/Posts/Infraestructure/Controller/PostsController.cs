@@ -20,10 +20,11 @@ public class PostsController : ControllerBase
     private readonly IPostInputPort _postInputPort;
     private readonly IPostOutPort _postOutPort;
 
-    public PostsController(IPostInputPort postInputPort, IPostOutPort postOutPort)
+    public PostsController(IPostInputPort postInputPort, IPostOutPort postOutPort,IHubContext<PostHub> hubContext)
     {
         _postInputPort = postInputPort;
         _postOutPort = postOutPort;
+        _hubContext = hubContext;
     }
     [HttpPost("createComment")]
     public async Task<IActionResult> CreateComment([FromBody] CreateCommentDto data)
