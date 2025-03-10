@@ -66,6 +66,7 @@ public class PostsController : ControllerBase
     {
         await _postInputPort.CreatePost(data);
         
+        await _hubContext.Clients.All.SendAsync("RefreshPosts", "se agrego un post");
         var response = _postOutPort.GetResponse;
         return Ok(response);
     }
