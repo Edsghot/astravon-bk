@@ -101,6 +101,7 @@ public class PostsController : ControllerBase
     public async Task<IActionResult> CreateLike([FromBody] CreateLikeDto data)
     {
         await _postInputPort.CreateLike(data);
+        await _hubContext.Clients.All.SendAsync("RefreshPosts", "se agrego un post");
         var response = _postOutPort.GetResponse;
         return Ok(response);
     }
