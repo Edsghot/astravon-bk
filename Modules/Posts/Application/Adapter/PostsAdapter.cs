@@ -25,18 +25,18 @@ namespace Astravon.Modules.Posts.Application.Adapter;
 public class PostAdapter: IPostInputPort
 {
     private readonly IPostRepository _postRepository;
+    private readonly IHubContext<PostHub> _hubContext;
     private readonly IPostOutPort _postOutPort;
     private readonly string _smtpServer = "smtp.gmail.com";
     private readonly int _smtpPort = 587;
     private readonly string _smtpUser = "edsghotSolutions@gmail.com";
     private readonly string _smtpPass = "lfqpacmpmnvuwhvb";
     private readonly Cloudinary _cloudinary;
-    private readonly IHubContext<AstravonHub> _hubContext;
     private readonly DateTime _peruDateTime;
 
 
 
-    public PostAdapter(IPostRepository repository,IPostOutPort OutPort,IHubContext<AstravonHub> hubContext)
+    public PostAdapter(IPostRepository repository,IPostOutPort OutPort,IHubContext<PostHub> hubContext)
     {
         _postRepository = repository;
         _postOutPort = OutPort;
@@ -66,9 +66,10 @@ public class PostAdapter: IPostInputPort
         var comment = request.Adapt<CommentEntity>();
         comment.DateComment = _peruDateTime;
         await _postRepository.AddAsync(comment);
+        
+        await _hubContext.Clients.All.SendAsync("RefreshPosts", "se agrego un comentario");
         _postOutPort.Ok("Su comentario fue agregado con exito");
-        await _hubContext.Clients.All.SendAsync("ReceiveMessage", "Sistema", $"Nuevo usuario creado: {user.FirstName} {user.LastName}");
-    }
+   }
     
     public async Task CreatePost(CreatePostDto request)
     {
@@ -88,8 +89,9 @@ public class PostAdapter: IPostInputPort
         }
 
         await _postRepository.AddAsync(post);
+ 
+        await _hubContext.Clients.All.SendAsync("RefreshPosts", "se agrego un comentario");
         _postOutPort.Ok("Su publicación fue agregada con éxito");
-        await _hubContext.Clients.All.SendAsync("ReceiveMessage", "Sistema", $"Nueva publicación creada por: {user.FirstName} {user.LastName}");
     }
     
     public async Task CreateLike(CreateLikeDto request)
@@ -110,9 +112,10 @@ public class PostAdapter: IPostInputPort
 
         var like = request.Adapt<LikeEntity>();
         await _postRepository.AddAsync(like);
+    
+        await _hubContext.Clients.All.SendAsync("RefreshPosts", "se agrego un like");
         _postOutPort.Ok("Su like fue agregado con éxito");
-        await _hubContext.Clients.All.SendAsync("ReceiveMessage", "Sistema", $"Nuevo like agregado por: {user.FirstName} {user.LastName}");
-    }
+     }
     
     public async Task UpdateComment(UpdateCommentDto request)
     {
@@ -125,6 +128,8 @@ public class PostAdapter: IPostInputPort
 
         comment.Content = request.Content ?? comment.Content;
         await _postRepository.UpdateAsync(comment);
+        
+        await _hubContext.Clients.All.SendAsync("RefreshPosts", "se actualizo un comentario");
         _postOutPort.Ok("Comentario actualizado con éxito");
     }
     public async Task GetCommentById(int commentId)
@@ -149,6 +154,8 @@ public class PostAdapter: IPostInputPort
         }
 
         await _postRepository.DeleteAsync(comment);
+        
+        await _hubContext.Clients.All.SendAsync("RefreshPosts", "se agrego un comentario");
         _postOutPort.Ok("Comentario eliminado con éxito");
     }
     
@@ -196,6 +203,8 @@ public class PostAdapter: IPostInputPort
         }
 
         await _postRepository.UpdateAsync(post);
+        
+        await _hubContext.Clients.All.SendAsync("RefreshPosts", "se agrego un comentario");
         _postOutPort.Ok("Publicación actualizada con éxito");
     }
 
@@ -209,6 +218,8 @@ public class PostAdapter: IPostInputPort
         }
 
         await _postRepository.DeleteAsync(post);
+        
+        await _hubContext.Clients.All.SendAsync("RefreshPosts", "se agrego un comentario");
         _postOutPort.Ok("Publicación eliminada con éxito");
     }
 
@@ -238,6 +249,8 @@ public class PostAdapter: IPostInputPort
         }
 
         await _postRepository.DeleteAsync(like);
+        
+        await _hubContext.Clients.All.SendAsync("RefreshPosts", "se elimino un like");
         _postOutPort.Ok("Like eliminado con éxito");
     }
 

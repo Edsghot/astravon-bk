@@ -16,7 +16,7 @@ namespace Astravon.Modules.User.Infraestructure.Controller;
 [ApiController]
 public class PostsController : ControllerBase
 {
-    private readonly IHubContext<PostHub> _hubContext;
+    
     private readonly IPostInputPort _postInputPort;
     private readonly IPostOutPort _postOutPort;
 
@@ -24,13 +24,11 @@ public class PostsController : ControllerBase
     {
         _postInputPort = postInputPort;
         _postOutPort = postOutPort;
-        _hubContext = hubContext;
     }
     [HttpPost("createComment")]
     public async Task<IActionResult> CreateComment([FromBody] CreateCommentDto data)
     {
         await _postInputPort.CreateComment(data);
-        await _hubContext.Clients.All.SendAsync("RefreshPosts", "se agrego un comentario");
         var response = _postOutPort.GetResponse;
         return Ok(response);
     }
@@ -66,7 +64,6 @@ public class PostsController : ControllerBase
     {
         await _postInputPort.CreatePost(data);
         
-        await _hubContext.Clients.All.SendAsync("RefreshPosts", "se agrego un post");
         var response = _postOutPort.GetResponse;
         return Ok(response);
     }
@@ -101,7 +98,7 @@ public class PostsController : ControllerBase
     public async Task<IActionResult> CreateLike([FromBody] CreateLikeDto data)
     {
         await _postInputPort.CreateLike(data);
-        await _hubContext.Clients.All.SendAsync("RefreshPosts", "se agrego un post");
+        
         var response = _postOutPort.GetResponse;
         return Ok(response);
     }
