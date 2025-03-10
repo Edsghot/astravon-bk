@@ -4,6 +4,8 @@ public class PostWithCountsDto
 {
     public int Id { get; set; }
     public int UserId { get; set; }
+    public string UserName { get; set; }
+    public string Mail { get; set; }
     public DateTime PublicationDate { get; set; }
     public string PostUrl { get; set; }
     public DateTime UpdatePost { get; set; }

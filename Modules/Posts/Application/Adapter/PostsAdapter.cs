@@ -160,8 +160,10 @@ public class PostAdapter: IPostInputPort
         {
             var likeCount = await _postRepository.CountAsync<LikeEntity>(x => x.PostId == post.Id);
             var commentCount = await _postRepository.CountAsync<CommentEntity>(x => x.PostId == post.Id);
-
+            var user = await _postRepository.GetAsync<UserEntity>(x => x.Id == post.UserId);
             var postWithCounts = post.Adapt<PostWithCountsDto>();
+            postWithCounts.UserName = user.FirstName + " " + user.LastName;
+            postWithCounts.Mail = user.Mail;
             postWithCounts.LikeCount = likeCount;
             postWithCounts.CommentCount = commentCount;
             postsWithCounts.Add(postWithCounts);
@@ -256,9 +258,14 @@ public class PostAdapter: IPostInputPort
     public async Task GetCommentByPost(int postId)
     {
         var comments = await _postRepository.GetAllAsync<CommentEntity>(x => x.Where(x => x.PostId == postId));
-        
         var response =  comments.Adapt<List<CommentDto>>();
-        
+        foreach (var data in response)
+        {
+            var user = await _postRepository.GetAsync<UserEntity>(x => x.Id == data.UserId);
+            data.UserName = user.FirstName + " " + user.LastName;
+            data.Mail = user.Mail;
+        }
+       
         _postOutPort.GetCommentByPost(response);
     }
 
