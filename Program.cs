@@ -63,10 +63,9 @@ app.UseHttpsRedirection();
 app.UseCors("AllowAll");
 
 app.UseAuthorization();
-app.MapHub<PostHub>("/postHub");
 app.MapControllers();
 
-app.MapHub<AstravonHub>("/astravonHub");
+app.MapHub<PostHub>("/postHub");
 
 
 app.Run();

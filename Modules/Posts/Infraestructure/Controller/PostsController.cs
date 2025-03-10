@@ -30,7 +30,7 @@ public class PostsController : ControllerBase
     public async Task<IActionResult> CreateComment([FromBody] CreateCommentDto data)
     {
         await _postInputPort.CreateComment(data);
-        await _hubContext.Clients.All.SendAsync("RefreshPosts");
+        await _hubContext.Clients.All.SendAsync("RefreshPosts", "se agrego un comentario");
         var response = _postOutPort.GetResponse;
         return Ok(response);
     }
