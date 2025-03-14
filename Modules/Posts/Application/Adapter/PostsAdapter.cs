@@ -87,6 +87,10 @@ public class PostAdapter: IPostInputPort
         {
             post.UrlMedia = await UploadMediaAsync(request.MediaFile, "posts");
         }
+        else
+        {
+            post.UrlMedia = "vacio";
+        }
 
         await _postRepository.AddAsync(post);
  
@@ -282,20 +286,6 @@ public class PostAdapter: IPostInputPort
         _postOutPort.GetCommentByPost(response);
     }
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     private async Task<string> UploadMediaAsync(IFormFile file, string folder)
     {
         if (file == null || file.Length == 0)
@@ -309,7 +299,7 @@ public class PostAdapter: IPostInputPort
         var isVideo = allowedVideoFormats.Contains(fileExtension);
 
         await using var stream = file.OpenReadStream();
-    
+
         ImageUploadParams uploadParams;
 
         if (isImage)
@@ -317,8 +307,7 @@ public class PostAdapter: IPostInputPort
             uploadParams = new ImageUploadParams
             {
                 File = new FileDescription(file.FileName, stream),
-                Folder = folder,
-                Transformation = new Transformation().Width(500).Height(500).Crop("fill")
+                Folder = folder
             };
         }
         else if (isVideo)
@@ -326,8 +315,7 @@ public class PostAdapter: IPostInputPort
             uploadParams = new VideoUploadParams
             {
                 File = new FileDescription(file.FileName, stream),
-                Folder = folder,
-                Transformation = new Transformation().Width(1080).Height(720).Crop("limit")
+                Folder = folder
             };
         }
         else
@@ -342,7 +330,7 @@ public class PostAdapter: IPostInputPort
         }
 
         var uploadResult2 = await _cloudinary.UploadAsync(uploadParams);
-   
+
         return uploadResult2.StatusCode == HttpStatusCode.OK ? uploadResult2.Url.AbsoluteUri : string.Empty;
     }
 
