@@ -91,6 +91,7 @@ public class PostAdapter: IPostInputPort
         {
             post.UrlMedia = "vacio";
         }
+        post.Content = request.Content != null ? request.Content : "";
 
         await _postRepository.AddAsync(post);
  
