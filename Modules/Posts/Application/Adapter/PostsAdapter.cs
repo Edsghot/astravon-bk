@@ -101,6 +101,7 @@ public class PostAdapter: IPostInputPort
     
     public async Task CreateLike(CreateLikeDto request)
     {
+        
         var post = await _postRepository.GetAsync<PostEntity>(x => x.Id == request.PostId);
         if (post == null)
         {
@@ -112,6 +113,13 @@ public class PostAdapter: IPostInputPort
         if (user == null)
         {
             _postOutPort.Error("No se encontro el usuario a crear");
+            return;
+        }
+        
+        var likeExist = await _postRepository.GetAsync<LikeEntity>(x => x.UserId == request.UserId && x.PostId == request.PostId);
+        if (likeExist != null)
+        {
+            _postOutPort.Error("Ya le diste like a esta publicación");
             return;
         }
 
